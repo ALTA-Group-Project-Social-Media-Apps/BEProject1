@@ -93,35 +93,7 @@ paths:
           $ref: "#/components/responses/400"
         '500':
           $ref: "#/components/responses/500"
-  # /users/{id}:
-  #   get:
-  #     parameters:
-  #     - in: path
-  #       name: id
-  #       required: true
-  #       schema:
-  #         type: integer
-  #     tags:
-  #       - "User"
-  #     summary: "Show user data based on user id"
-  #     responses:
-  #       '200':
-  #         description: "Succes get user data"
-  #         content:
-  #           application/json:
-  #             schema:
-  #               type: object
-  #               $ref: "#/components/schemas/UserObject"
-  #             example:
-  #               message: "success get user"
-  #               data:
-  #                 id: 1
-  #                 nama: "Jerry"
-  #                 hp: "081234"
-  #       '400':
-  #         $ref: "#/components/responses/400"
-  #       '500':
-  #         $ref: "#/components/responses/500"
+
   /users/me:
     put:
       tags:
@@ -140,6 +112,7 @@ paths:
               email: "azizw@duck.com"
               password: "123456789"
               photo: aziz123.jpg  
+              bio: "oplover"
       responses:
         '201':
           description: "success update user"
@@ -156,6 +129,7 @@ paths:
                   email: "azizw@duck.com"
                   password: "123456789"
                   photo: aziz123.jpg  
+                  bio: "oplover"
         '400':
           $ref: "#/components/responses/400"
         '500':
@@ -169,6 +143,8 @@ paths:
           type: integer
       tags:
         - "Users"
+      security:
+      - JWTAuth: []
       summary: Delete by id
       responses:
         '204':
@@ -177,6 +153,32 @@ paths:
           description: id not found
         '401':
           description: Unauthorized
+    
+    get:
+      tags:
+        - "Users"
+      summary: "shows user profile"
+      responses:
+        '200':
+          description: "Success get user profile"
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/UserObject"
+              example:
+                message: "success update user"
+                data:
+                  id: 2
+                  username: "aziz123"
+                  email: "azizw@duck.com"
+                  password: "123456789"
+                  photo: aziz123.jpg  
+                  bio: "oplover"
+        '400':
+          $ref: "#/components/responses/400"
+        '500':
+          $ref: "#/components/responses/500"
 #++++++++++++++++++++
 # Posts
 #++++++++++++++++++++
@@ -290,6 +292,8 @@ paths:
           type: integer
       tags:
         - "Posts"
+      security:
+        - JWTAuth: []
       summary: Delete by id
       responses:
         '204':
@@ -298,7 +302,166 @@ paths:
           description: id not found
         '401':
           description: Unauthorized
+  /posts/me:
+    get:
+      tags:
+        - "Posts"
+      security:
+        - JWTAuth: []
+      summary: "shows all user post"
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: "Success get all post"
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/ResponseArray"
+              example:
+                message: "success get all post"
+                data:
+                  - id: 1
+                    content: "#spoileronepiece1064"
+                    created_at: "2022-10-17 10:24:17"
+                    owner: aziz123
+                  - id: 2
+                    content: "#spoilerkaguya-sama"
+                    created_at: "2022-10-18 10:24:17"
+                    owner: aziz123
+        '400':
+          $ref: "#/components/responses/400"
+        '500':
+          $ref: "#/components/responses/500"
+  
+#++++++++++++++++++++
+# Comments
+#++++++++++++++++++++
+  /comments:
+    post:
+      tags:
+        - "Comments"
+      security:
+        - JWTAuth: []
+      summary: "Create comment"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/CommentObject"
+            example:
+              username: "aziz123"
+              email: "azizw@duck.com"
+              postId: 1
+              content: "why r u reading mid"      
+      responses:
+        '201':
+          description: "success create comment"
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/CommentObject"
+              example:
+                message: "success create comment"
+                data:
+                  id: 2
+                  username: "aziz123"
+                  email: "azizw@duck.com"
+                  postId: 1
+                  content: "why r u reading mid"  
+        '400':
+          $ref: "#/components/responses/400"
+        '500':
+          $ref: "#/components/responses/500"
 
+    get:
+      tags:
+        - "Comments"
+      summary: "show all comments"
+      responses:
+        '200':
+          description: "Success get all comments"
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/ResponseArray"
+              example:
+                message: "success get all comments"
+                data:
+                  - id: 1
+                    username: "aziz123"
+                    created_at: "2022-10-17 10:24:17"
+                    postId: 2
+                    content: "bro been reading twopiece"
+                  - id: 2
+                    username: "alif12"
+                    created_at: "2022-10-17 10:24:17"
+                    postId: 3
+                    content: "dude clearly can't read"
+        '400':
+          $ref: "#/components/responses/400"
+        '500':
+          $ref: "#/components/responses/500"
+  
+  /comments/preview:
+    get:
+      tags:
+        - "Comments"
+      summary: "show thre letest comments"
+      responses:
+        '200':
+          description: "Success get thre letest"
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/ResponseArray"
+              example:
+                message: "success get thre letest"
+                data:
+                  - id: 1
+                    username: "aziz123"
+                    created_at: "2022-10-17 10:24:17"
+                    postId: 2
+                    content: "bro been reading twopiece"
+                  - id: 2
+                    username: "alif12"
+                    created_at: "2022-10-17 10:24:17"
+                    postId: 3
+                    content: "dude clearly can't read"
+        '400':
+          $ref: "#/components/responses/400"
+        '500':
+          $ref: "#/components/responses/500"
+
+    delete:
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      tags:
+        - "Comments"
+      security:
+        - JWTAuth: []
+      summary: Delete by id
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          description: id not found
+        '401':
+          description: Unauthorized
+#####
 
 #++++++++++++++++++++
 # Components
@@ -324,6 +487,19 @@ components:
           format: password
         photo:
           type: string
+        bio:
+          type: string
+    CommentObject:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        postId:
+          type: integer
+        content:
+          type: string
     RegistrationObject:
       type: object
       properties:
@@ -348,6 +524,8 @@ components:
         password:
           type: string
         photo:
+          type: string
+        bio: 
           type: string
     RequestContent:
       type: object
