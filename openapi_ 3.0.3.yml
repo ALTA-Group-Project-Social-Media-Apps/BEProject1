@@ -22,6 +22,7 @@ paths:
     post:
       tags:
         - "Authentication"
+      summary: "user login"
       requestBody:
           content:
             application/json:
@@ -469,7 +470,6 @@ paths:
           description: id not found
         '401':
           description: Unauthorized
-#####
 
 #++++++++++++++++++++
 # Components
