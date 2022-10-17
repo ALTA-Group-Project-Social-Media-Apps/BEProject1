@@ -160,7 +160,6 @@ paths:
           $ref: "#/components/responses/400"
         '500':
           $ref: "#/components/responses/500"
-
     delete:
       parameters:
       - in: path
@@ -181,11 +180,10 @@ paths:
 #++++++++++++++++++++
 # Posts
 #++++++++++++++++++++
-
-  /post:
+  /posts:
     get:
       tags:
-        - "Post"
+        - "Posts"
       summary: "shows all post"
       responses:
         '200':
@@ -210,15 +208,17 @@ paths:
           $ref: "#/components/responses/400"
         '500':
           $ref: "#/components/responses/500"
-
     post:
       tags:
-        - "Post"
+        - "Posts"
       summary: "Add new post"
       security:
         - JWTAuth: []
       requestBody:
         $ref: "#/components/requestBodies/PostContent"
+        example:
+          content: "#onepiece1064spoiler ..."
+          photo: "server/onepiece1064spoiler.jpg"
       responses:
         '201':
           description: "succsess created post"
@@ -232,17 +232,55 @@ paths:
                 data: 
                   id: 2
                   content: "#onepiece1064spoiler ...."
+                  photo: "server/onepiece1064spoiler.jpg"
                   username: "aziz123"
                   created_at: "2022-10-17 10:24:17"
                   updated_at: "2022-10-18 10:24:17"
                   deleted_at:
-
-
-
         '400':
           $ref: "#/components/responses/400"
         '500':
           $ref: "#/components/responses/500"
+    put:
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      tags:
+        - "Posts"
+      summary: "Update post by account owner"
+      security:
+        - JWTAuth: []
+      requestBody:
+        $ref: "#/components/requestBodies/PostContent"
+        example:
+          content: "#onepiece1064spoiler ..."
+          photo: "server/onepiece1064spoiler.jpg"  
+      responses:
+        '201':
+          description: "succsess updated post"
+          content:
+            application/json:
+              schema: 
+                type: object
+                $ref: "#/components/schemas/ResponsePost"
+              example:
+                message: "succes post a post"
+                data: 
+                  id: 2
+                  content: "#onepiece1064spoiler ...."
+                  photo: "server/onepiece1064spoiler.jpg"
+                  username: "aziz123"
+                  created_at: "2022-10-17 10:24:17"
+                  updated_at: "2022-10-18 10:24:17"
+                  deleted_at:
+        '400':
+          $ref: "#/components/responses/400"
+        '500':
+          $ref: "#/components/responses/500"
+
 
 
 #++++++++++++++++++++
@@ -299,12 +337,16 @@ components:
       properties:
         content:
           type: string 
+        photo:
+          type: string
     ResponsePost:
       type: object
       properties:
         id: 
           type: integer
         content:
+          type: string
+        photo:
           type: string
         username:
           type: string
@@ -334,7 +376,7 @@ components:
   requestBodies:
     PostContent:
       content:
-        application/json:
+        multipart/form-data:
           schema: 
             $ref: "#/components/schemas/RequestContent"
   
