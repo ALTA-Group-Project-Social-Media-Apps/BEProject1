@@ -7,7 +7,7 @@ servers:
   # Added by API Auto Mocking Plugin
   - description: SwaggerHub API Auto Mocking
     url: https://virtserver.swaggerhub.com/aziz-wahyudin/Social-Media-Apps/1.0.0
-  - url: "localhost:8000" # perlu diubah menyesuaikan dengan host domain
+  - url: "http://18.143.74.57:8000" # perlu diubah menyesuaikan dengan host domain
     description: "link project"
 tags:
   - name: Users
