@@ -4,14 +4,20 @@ info:
   description: "Project 1 Group 5 Social Media Apps"
   version: 1.0.0
 servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/aziz-wahyudin/Social-Media-Apps/1.0.0
   - url: "localhost:8000" # perlu diubah menyesuaikan dengan host domain
     description: "link project"
 tags:
-  - name: User
+  - name: Users
   - name: Authentication
-  - name: Post 
-  - name: Comment
+  - name: Posts 
+  - name: Comments 
 paths:
+#++++++++++++++++++++
+# Authentication
+#++++++++++++++++++++
   /login:
     post:
       tags:
@@ -48,21 +54,25 @@ paths:
           $ref: "#/components/responses/400"
         '500':
           $ref: "#/components/responses/500"
-  /user:
+#++++++++++++++++++++
+# Users
+#++++++++++++++++++++
+  /users:
     post:
       tags:
-        - "User"
+        - "Users"
       summary: "Registration feature for user"
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
               type: object
-              $ref: "#/components/schemas/UserObject"
+              $ref: "#/components/schemas/RegistrationObject"
             example:
               username: "aziz123"
               email: "azizw@duck.com"
               password: "123456789"
+              photo: aziz123.jpg      
       responses:
         '201':
           description: "success create account"
@@ -78,96 +88,58 @@ paths:
                   username: "aziz123"
                   email: "azizw@duck.com"
                   password: "123456789"
+                  photo: aziz123.jpg
         '400':
           $ref: "#/components/responses/400"
         '500':
           $ref: "#/components/responses/500"
-    get:
+  # /users/{id}:
+  #   get:
+  #     parameters:
+  #     - in: path
+  #       name: id
+  #       required: true
+  #       schema:
+  #         type: integer
+  #     tags:
+  #       - "User"
+  #     summary: "Show user data based on user id"
+  #     responses:
+  #       '200':
+  #         description: "Succes get user data"
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               $ref: "#/components/schemas/UserObject"
+  #             example:
+  #               message: "success get user"
+  #               data:
+  #                 id: 1
+  #                 nama: "Jerry"
+  #                 hp: "081234"
+  #       '400':
+  #         $ref: "#/components/responses/400"
+  #       '500':
+  #         $ref: "#/components/responses/500"
+  /users/me:
+    put:
       tags:
-        - "User"
-      summary: "Tampilkan data seluruh user"
-      responses:
-        '200':
-          description: "Succes get all user data"
-          content:
-            application/json:
-              schema:
-                type: object
-                $ref: "#/components/schemas/ResponseArray"
-              example:
-                message: "success get all user"
-                data:
-                  - id: 1
-                    nama: "Jerry"
-                    hp: "081234"
-                  - id: 2
-                    nama: "Tono"
-                    hp: "01234"
-        '400':
-          $ref: "#/components/responses/400"
-        '500':
-          $ref: "#/components/responses/500"
-  /user/{id}:
-    get:
-      parameters:
-      - in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      tags:
-        - "User"
-      summary: "Tampilkan data user berdasarkan id yang dicari"
-      responses:
-        '200':
-          description: "Succes get user data"
-          content:
-            application/json:
-              schema:
-                type: object
-                $ref: "#/components/schemas/UserObject"
-              example:
-                message: "success get user"
-                data:
-                  id: 1
-                  nama: "Jerry"
-                  hp: "081234"
-        '400':
-          $ref: "#/components/responses/400"
-        '500':
-          $ref: "#/components/responses/500"
-    delete:
-      parameters:
-      - in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      tags:
-        - "User"
-      summary: Delete by id
-      responses:
-        '204':
-          description: Deleted
-        '404':
-          description: id not found
-        '401':
-          description: Unauthorized
-  /user/update:
-    post:
-      tags:
-        - "User"
-      summary: "Untuk fitur update"
+        - "Users"
+      summary: "Update user profile by account owner"
+      security:
+        - JWTAuth: []
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
               type: object
-              $ref: "#/components/schemas/UserObject"
+              $ref: "#/components/schemas/RequestUpdate"
             example:
-              nama: "tono"
-              hp: "012345"
-              password: "halo123"
+              username: "aziz123"
+              email: "azizw@duck.com"
+              password: "123456789"
+              photo: aziz123.jpg  
       responses:
         '201':
           description: "success update user"
@@ -180,18 +152,34 @@ paths:
                 message: "success update user"
                 data:
                   id: 2
-                  nama: "tono"
-                  hp: "012345"
+                  username: "aziz123"
+                  email: "azizw@duck.com"
+                  password: "123456789"
+                  photo: aziz123.jpg  
         '400':
           $ref: "#/components/responses/400"
         '500':
           $ref: "#/components/responses/500"
-  #   get:
-  #   put:
-  #   delete:
 
+    delete:
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      tags:
+        - "Users"
+      summary: Delete by id
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          description: id not found
+        '401':
+          description: Unauthorized
 #++++++++++++++++++++
-# Post
+# Posts
 #++++++++++++++++++++
 
   /post:
@@ -272,13 +260,15 @@ components:
       properties:
         id:
           type: integer
-        nama:
+        username:
           type: string
-        hp:
+        email:
           type: string
         password:
           type: string
           format: password
+        photo:
+          type: string
     RegistrationObject:
       type: object
       properties:
@@ -291,6 +281,19 @@ components:
         password:
           type: string
           minLength: 4
+        photo:
+          type: string
+    RequestUpdate:
+      type: object
+      properties:
+        username:
+          type: string
+        email: 
+          type: string
+        password:
+          type: string
+        photo:
+          type: string
     RequestContent:
       type: object
       properties:
