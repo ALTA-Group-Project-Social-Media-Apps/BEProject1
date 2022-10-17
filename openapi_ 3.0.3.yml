@@ -84,7 +84,7 @@ paths:
               example:
                 message: "success register account"
                 data:
-                  id: 2
+                  id_user: 2
                   username: "aziz123"
                   email: "azizw@duck.com"
                   password: "123456789"
@@ -93,14 +93,12 @@ paths:
           $ref: "#/components/responses/400"
         '500':
           $ref: "#/components/responses/500"
-
-  /users/me:
     put:
       tags:
         - "Users"
       summary: "Update user profile by account owner"
       security:
-        - JWTAuth: []
+        - bearerAuth: []
       requestBody:
         content:
           multipart/form-data:
@@ -124,7 +122,7 @@ paths:
               example:
                 message: "success update user"
                 data:
-                  id: 2
+                  id_user: 2
                   username: "aziz123"
                   email: "azizw@duck.com"
                   password: "123456789"
@@ -134,17 +132,18 @@ paths:
           $ref: "#/components/responses/400"
         '500':
           $ref: "#/components/responses/500"
+  /users/{id_user}:  
     delete:
       parameters:
       - in: path
-        name: id
+        name: id_user
         required: true
         schema:
           type: integer
       tags:
         - "Users"
       security:
-      - JWTAuth: []
+      - bearerAuth: []
       summary: Delete by id
       responses:
         '204':
@@ -153,11 +152,18 @@ paths:
           description: id not found
         '401':
           description: Unauthorized
-    
     get:
+      parameters:
+      - in: path
+        name: id_user
+        required: true
+        schema:
+          type: integer
       tags:
         - "Users"
       summary: "shows user profile"
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: "Success get user profile"
@@ -169,7 +175,7 @@ paths:
               example:
                 message: "success update user"
                 data:
-                  id: 2
+                  id_user: 2
                   username: "aziz123"
                   email: "azizw@duck.com"
                   password: "123456789"
@@ -198,11 +204,11 @@ paths:
               example:
                 message: "success get all post"
                 data:
-                  - id: 1
+                  - id_post: 1
                     content: "#spoileronepiece1064"
                     created_at: "2022-10-17 10:24:17"
                     owner: aziz123
-                  - id: 2
+                  - id_post: 2
                     content: "#spoilerkaguya-sama"
                     created_at: "2022-10-18 10:24:17"
                     owner: aziz123
@@ -215,7 +221,7 @@ paths:
         - "Posts"
       summary: "Add new post"
       security:
-        - JWTAuth: []
+        - bearerAuth: []
       requestBody:
         $ref: "#/components/requestBodies/PostContent"
         example:
@@ -232,7 +238,7 @@ paths:
               example:
                 message: "succes post a post"
                 data: 
-                  id: 2
+                  id_post: 2
                   content: "#onepiece1064spoiler ...."
                   photo: "server/onepiece1064spoiler.jpg"
                   username: "aziz123"
@@ -243,10 +249,11 @@ paths:
           $ref: "#/components/responses/400"
         '500':
           $ref: "#/components/responses/500"
+  /posts/{id_post}:
     put:
       parameters:
       - in: path
-        name: id
+        name: id_post
         required: true
         schema:
           type: integer
@@ -254,7 +261,7 @@ paths:
         - "Posts"
       summary: "Update post by account owner"
       security:
-        - JWTAuth: []
+        - bearerAuth: []
       requestBody:
         $ref: "#/components/requestBodies/PostContent"
         example:
@@ -271,7 +278,7 @@ paths:
               example:
                 message: "succes post a post"
                 data: 
-                  id: 2
+                  id_post: 2
                   content: "#onepiece1064spoiler ...."
                   photo: "server/onepiece1064spoiler.jpg"
                   username: "aziz123"
@@ -286,14 +293,14 @@ paths:
     delete:
       parameters:
       - in: path
-        name: id
+        name: id_post
         required: true
         schema:
           type: integer
       tags:
         - "Posts"
       security:
-        - JWTAuth: []
+        - bearerAuth: []
       summary: Delete by id
       responses:
         '204':
@@ -302,16 +309,16 @@ paths:
           description: id not found
         '401':
           description: Unauthorized
-  /posts/me:
+  /posts/{id_user}:
     get:
       tags:
         - "Posts"
       security:
-        - JWTAuth: []
+        - bearerAuth: []
       summary: "shows all user post"
       parameters:
       - in: path
-        name: id
+        name: id_user
         required: true
         schema:
           type: integer
@@ -326,11 +333,11 @@ paths:
               example:
                 message: "success get all post"
                 data:
-                  - id: 1
+                  - id_post: 1
                     content: "#spoileronepiece1064"
                     created_at: "2022-10-17 10:24:17"
                     owner: aziz123
-                  - id: 2
+                  - id_post: 2
                     content: "#spoilerkaguya-sama"
                     created_at: "2022-10-18 10:24:17"
                     owner: aziz123
@@ -347,7 +354,7 @@ paths:
       tags:
         - "Comments"
       security:
-        - JWTAuth: []
+        - bearerAuth: []
       summary: "Create comment"
       requestBody:
         content:
@@ -358,7 +365,7 @@ paths:
             example:
               username: "aziz123"
               email: "azizw@duck.com"
-              postId: 1
+              id_post: 1
               content: "why r u reading mid"      
       responses:
         '201':
@@ -371,10 +378,10 @@ paths:
               example:
                 message: "success create comment"
                 data:
-                  id: 2
+                  id_comment: 2
                   username: "aziz123"
                   email: "azizw@duck.com"
-                  postId: 1
+                  id_post: 1
                   content: "why r u reading mid"  
         '400':
           $ref: "#/components/responses/400"
@@ -396,15 +403,15 @@ paths:
               example:
                 message: "success get all comments"
                 data:
-                  - id: 1
+                  - id_comment: 1
                     username: "aziz123"
                     created_at: "2022-10-17 10:24:17"
-                    postId: 2
+                    id_post: 2
                     content: "bro been reading twopiece"
-                  - id: 2
+                  - id_comment: 2
                     username: "alif12"
                     created_at: "2022-10-17 10:24:17"
-                    postId: 3
+                    id_post: 3
                     content: "dude clearly can't read"
         '400':
           $ref: "#/components/responses/400"
@@ -427,32 +434,33 @@ paths:
               example:
                 message: "success get thre letest"
                 data:
-                  - id: 1
+                  - id_comment: 1
                     username: "aziz123"
                     created_at: "2022-10-17 10:24:17"
-                    postId: 2
+                    id_post: 2
                     content: "bro been reading twopiece"
-                  - id: 2
+                  - id_comment: 2
                     username: "alif12"
                     created_at: "2022-10-17 10:24:17"
-                    postId: 3
+                    id_post: 3
                     content: "dude clearly can't read"
         '400':
           $ref: "#/components/responses/400"
         '500':
           $ref: "#/components/responses/500"
-
+  
+  /comments/{id_comment}:
     delete:
       parameters:
       - in: path
-        name: id
+        name: id_comment
         required: true
         schema:
           type: integer
       tags:
         - "Comments"
       security:
-        - JWTAuth: []
+        - bearerAuth: []
       summary: Delete by id
       responses:
         '204':
@@ -476,7 +484,7 @@ components:
     UserObject:
       type: object
       properties:
-        id:
+        id_user:
           type: integer
         username:
           type: string
@@ -492,18 +500,18 @@ components:
     CommentObject:
       type: object
       properties:
-        id:
+        id_comment:
           type: integer
         username:
           type: string
-        postId:
+        id_post:
           type: integer
         content:
           type: string
     RegistrationObject:
       type: object
       properties:
-        id: 
+        id_user: 
           type: integer
         username:
           type: string
@@ -537,7 +545,7 @@ components:
     ResponsePost:
       type: object
       properties:
-        id: 
+        id_post: 
           type: integer
         content:
           type: string
@@ -568,6 +576,8 @@ components:
           type: string
         data:
           type: array
+          items:
+            type: object
   requestBodies:
     PostContent:
       content:
