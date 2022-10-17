@@ -280,7 +280,24 @@ paths:
           $ref: "#/components/responses/400"
         '500':
           $ref: "#/components/responses/500"
-
+          
+    delete:
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      tags:
+        - "Posts"
+      summary: Delete by id
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          description: id not found
+        '401':
+          description: Unauthorized
 
 
 #++++++++++++++++++++
