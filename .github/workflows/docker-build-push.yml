@@ -38,4 +38,4 @@ jobs:
             docker stop project-1
             docker rm project-1
             docker rmi azizw/project1
-            docker run --name project-1 --link mysql:3306 -d -p 8000:8000 azizw/project1
+            docker run --name project-1 --link mysql-project:3306 -d -p 8000:8000 azizw/project1
