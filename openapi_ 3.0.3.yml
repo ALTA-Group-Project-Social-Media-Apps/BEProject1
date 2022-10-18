@@ -65,15 +65,14 @@ paths:
       summary: "Registration feature for user"
       requestBody:
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
               $ref: "#/components/schemas/RegistrationObject"
             example:
               username: "aziz123"
               email: "azizw@duck.com"
-              password: "123456789"
-              photo: aziz123.jpg      
+              password: "123456789" 
       responses:
         '201':
           description: "success create account"
@@ -89,7 +88,6 @@ paths:
                   username: "aziz123"
                   email: "azizw@duck.com"
                   password: "123456789"
-                  photo: aziz123.jpg
         '400':
           $ref: "#/components/responses/400"
         '500':
@@ -110,7 +108,7 @@ paths:
               username: "aziz123"
               email: "azizw@duck.com"
               password: "123456789"
-              photo: aziz123.jpg  
+              photo: aziz123.jpg
               bio: "oplover"
       responses:
         '201':
