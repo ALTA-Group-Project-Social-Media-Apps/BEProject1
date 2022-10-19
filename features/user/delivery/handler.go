@@ -3,7 +3,7 @@ package delivery
 import (
 	"net/http"
 
-	jwt "github.com/ALTA-Group-Project-Social-Media-Apps/Social-Media-Apps/features/user/JWT"
+	jwt "github.com/ALTA-Group-Project-Social-Media-Apps/Social-Media-Apps/features/JWT"
 	"github.com/ALTA-Group-Project-Social-Media-Apps/Social-Media-Apps/features/user/domain"
 	"github.com/labstack/echo/v4"
 )
