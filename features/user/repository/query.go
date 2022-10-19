@@ -15,3 +15,12 @@ func New(dbConn *gorm.DB) domain.Repository {
 		db: dbConn,
 	}
 }
+
+func (rq *repoQuery) Delete(ID uint) error {
+	var resQry User
+	if err := rq.db.Delete(&resQry, "ID = ?", ID).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
