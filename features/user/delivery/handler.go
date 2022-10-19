@@ -15,6 +15,7 @@ type userHandler struct {
 func New(e *echo.Echo, srv domain.Service) {
 	handler := userHandler{srv: srv}
 	e.DELETE("/users", handler.DeleteByID())
+	e.POST("/users", handler.AddUser())
 }
 
 func (us *userHandler) DeleteByID() echo.HandlerFunc {
@@ -32,4 +33,21 @@ func (us *userHandler) DeleteByID() echo.HandlerFunc {
 
 		return c.JSON(http.StatusOK, SuccessDelete("success delete user"))
 	}
+}
+
+func (us *userHandler) AddUser() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		var input RegisterFormat
+		if err := c.Bind(&input); err != nil {
+			return c.JSON(http.StatusBadRequest, FailResponse("cannot bind input"))
+		}
+		cnv := ToDomain(input)
+		res, err := us.srv.AddUser(cnv)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, FailResponse(err.Error()))
+		}
+
+		return c.JSON(http.StatusCreated, SuccessResponse("berhasil register", ToResponse(res, "reg")))
+	}
+
 }
