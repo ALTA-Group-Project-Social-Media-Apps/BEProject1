@@ -24,3 +24,14 @@ func (rq *repoQuery) Delete(ID uint) error {
 
 	return nil
 }
+
+func (rq *repoQuery) Insert(newUser domain.Core) (domain.Core, error) {
+	var cnv User
+	cnv = FromDomain(newUser)
+	if err := rq.db.Create(&cnv).Error; err != nil {
+		return domain.Core{}, err
+	}
+	// selesai dari DB
+	newUser = ToDomain(cnv)
+	return newUser, nil
+}
