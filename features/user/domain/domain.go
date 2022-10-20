@@ -14,14 +14,17 @@ type Core struct {
 type Repository interface {
 	Insert(newUser Core) (Core, error)
 	Delete(ID uint) error
+	Update(updateData Core) (Core, error)
 }
 
 type Service interface {
 	AddUser(newUser Core) (Core, error)
 	Delete(id uint) error
+	UpdateProfile(updateData Core) (Core, error)
 }
 
 type Handler interface {
 	AddUser() echo.HandlerFunc
 	DeleteByID() echo.HandlerFunc
+	updateUser() echo.HandlerFunc
 }
