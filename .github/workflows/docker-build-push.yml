@@ -25,7 +25,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: azizw/project1:latest
+          tags: alifallukman/beproject1:latest
       - 
         name: executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@master
@@ -35,7 +35,7 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            docker stop project-1
-            docker rm project-1
-            docker rmi azizw/project1
-            docker run --name project-1 --link mysql-project:3306 -d -p 8000:8000 azizw/project1
+            docker stop beproject1
+            docker rm beproject1
+            docker rmi alifallukman/beproject1
+            docker run --name beproject1 --link projectserver:3306 -d -p 3000:3000 -e AWS_KEY=${{ secrets.AWS_KEY }} -e AWS_USER=${{ secrets.AWS_USER }} -e AWS_REGION=${{ secrets.AWS_REGION }} alifallukman/beproject1
