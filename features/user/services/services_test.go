@@ -106,11 +106,11 @@ func TestLogin(t *testing.T) {
 		assert.Equal(t, input.Username, res.Username, "Nama user harus sesuai")
 		repo.AssertExpectations(t)
 	})
-	t.Run("Gaga; Hash", func(t *testing.T) {
-		repo.On("Insert", mock.Anything).Return(domain.Core{}, errors.New("cannot encript password")).Once()
+	t.Run("Gagal Login", func(t *testing.T) {
+		repo.On("Login", mock.Anything).Return(domain.Core{}, errors.New("cannot encript password")).Once()
 		srv := New(repo)
 		input := domain.Core{Username: "same", Password: ""}
-		res, err := srv.AddUser(input)
+		res, err := srv.LoginUser(input)
 		assert.NotNil(t, err)
 		assert.EqualError(t, err, "cannot encript password", "Pesan error tidak sesuai")
 		assert.Equal(t, uint(0), res.ID, "ID seharusnya 0 karena gagal input data")
