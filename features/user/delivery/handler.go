@@ -69,3 +69,21 @@ func (us *userHandler) updateUser() echo.HandlerFunc {
 	}
 
 }
+
+func (us *userHandler) LoginUser() echo.HandlerFunc {
+	//autentikasi user login
+	return func(c echo.Context) error {
+		var resQry LoginFormat
+		if err := c.Bind(&resQry); err != nil {
+			return c.JSON(http.StatusBadRequest, FailResponse("cannot bind input"))
+		}
+
+		cnv := ToDomain(resQry)
+		res, err := us.srv.LoginUser(cnv)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, FailResponse(err.Error()))
+		}
+		token := us.srv.GenerateToken(res.ID)
+		return c.JSON(http.StatusCreated, SuccessLogin("berhasil register", token, ToResponse(res, "reg")))
+	}
+}

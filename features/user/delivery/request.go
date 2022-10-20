@@ -17,6 +17,11 @@ type UpdateFormat struct {
 	Password string `json:"password" form:"password"`
 }
 
+type LoginFormat struct {
+	Username string `json:"nama" form:"nama"`
+	Password string `json:"password" form:"password"`
+}
+
 func ToDomain(i interface{}) domain.Core {
 	switch i.(type) {
 	case RegisterFormat:
@@ -25,6 +30,10 @@ func ToDomain(i interface{}) domain.Core {
 	case UpdateFormat:
 		cnv := i.(UpdateFormat)
 		return domain.Core{ID: cnv.ID, Username: cnv.Username, Email: cnv.Email, Photo: cnv.Photo, Bio: cnv.Bio, Password: cnv.Password}
+	case LoginFormat:
+		cnv := i.(LoginFormat)
+		return domain.Core{Username: cnv.Username, Password: cnv.Password}
+
 	}
 
 	return domain.Core{}
