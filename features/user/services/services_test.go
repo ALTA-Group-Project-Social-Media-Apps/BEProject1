@@ -32,6 +32,32 @@ func TestDelete(t *testing.T) {
 	})
 }
 
+func TestUpdate(t *testing.T) {
+	repo := mocks.NewRepository(t)
+	t.Run("Sukses Update", func(t *testing.T) {
+		repo.On("Update", mock.Anything).Return(domain.Core{ID: uint(1), Username: "same", Email: "skjsa"}, nil).Once()
+		srv := New(repo)
+		input := domain.Core{ID: 1, Username: "same", Email: "skjsa", Password: "same"}
+		res, err := srv.UpdateProfile(input)
+		assert.Nil(t, err)
+		assert.NotEmpty(t, res.ID, "Seharusnya ada ID user yang diupdate")
+		assert.NotEqual(t, res.Password, input.Password, "Password tidak terenkripsi")
+		assert.Equal(t, input.Username, res.Username, "Nama user harus sesuai")
+		repo.AssertExpectations(t)
+	})
+
+	t.Run("Gagal Update", func(t *testing.T) {
+		repo.On("Update", mock.Anything).Return(domain.Core{}, errors.New("rejected from database")).Once()
+		srv := New(repo)
+		input := domain.Core{Username: "same", Email: "skjsa", Password: "same"}
+		res, err := srv.UpdateProfile(input)
+		assert.NotNil(t, err)
+		assert.EqualError(t, err, "rejected from database", "Pesan error tidak sesuai")
+		assert.Equal(t, uint(0), res.ID, "ID seharusnya 0 karena gagal input data")
+		repo.AssertExpectations(t)
+	})
+}
+
 func TestAddUserr(t *testing.T) {
 	repo := mocks.NewRepository(t)
 	t.Run("Sukses Insert", func(t *testing.T) {

@@ -35,3 +35,14 @@ func (rq *repoQuery) Insert(newUser domain.Core) (domain.Core, error) {
 	newUser = ToDomain(cnv)
 	return newUser, nil
 }
+
+func (rq *repoQuery) Update(updatedData domain.Core) (domain.Core, error) {
+	var cnv User
+	cnv = FromDomain(updatedData)
+	if err := rq.db.Where("id = ?", cnv.ID).Updates(&cnv).Error; err != nil {
+		return domain.Core{}, err
+	}
+	// selesai dari DB
+	updatedData = ToDomain(cnv)
+	return updatedData, nil
+}
