@@ -90,14 +90,14 @@ func (us *userHandler) updateUser() echo.HandlerFunc {
 
 		uploader := s3manager.NewUploader(s3Session)
 		inputData := &s3manager.UploadInput{
-			Bucket: aws.String("sosialtabucket"),           // bucket's name
+			Bucket: aws.String("alifproject"),           // bucket's name
 			Key:    aws.String("myfiles/" + file.Filename), // files destination location
 			Body:   src,                                    // content of the file
 			// ACL:    aws.String("Objects - List"),
 			// ContentType: aws.String("image/png"), // content type
 		}
 		_, _ = uploader.UploadWithContext(context.Background(), inputData)
-		input.Photo = "" + strings.ReplaceAll(file.Filename, " ", "+")
+		input.Photo = "s3://alifproject/myfiles/" + strings.ReplaceAll(file.Filename, " ", "+")
 		input.ID = jwt.ExtractToken(c)
 		if input.ID == 0 {
 			return c.JSON(http.StatusUnauthorized, map[string]interface{}{
