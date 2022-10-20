@@ -92,3 +92,28 @@ func TestAddUserr(t *testing.T) {
 		repo.AssertExpectations(t)
 	})
 }
+
+func TestLogin(t *testing.T) {
+	repo := mocks.NewRepository(t)
+	t.Run("Sukses Login", func(t *testing.T) {
+		repo.On("Login", mock.Anything).Return(domain.Core{ID: uint(1), Username: "same"}, nil).Once()
+		srv := New(repo)
+		input := domain.Core{Username: "same", Password: "same"}
+		res, err := srv.LoginUser(input)
+		assert.Nil(t, err)
+		assert.NotEmpty(t, res.ID, "Seharusnya ada ID yang berhasil dibuat")
+		assert.NotEqual(t, res.Password, input.Password, "Password tidak terenkripsi")
+		assert.Equal(t, input.Username, res.Username, "Nama user harus sesuai")
+		repo.AssertExpectations(t)
+	})
+	t.Run("Gagal Login", func(t *testing.T) {
+		repo.On("Login", mock.Anything).Return(domain.Core{}, errors.New("cannot encript password")).Once()
+		srv := New(repo)
+		input := domain.Core{Username: "same", Password: ""}
+		res, err := srv.LoginUser(input)
+		assert.NotNil(t, err)
+		assert.EqualError(t, err, "cannot encript password", "Pesan error tidak sesuai")
+		assert.Equal(t, uint(0), res.ID, "ID seharusnya 0 karena gagal input data")
+		repo.AssertExpectations(t)
+	})
+}
