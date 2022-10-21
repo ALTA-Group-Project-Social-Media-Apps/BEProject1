@@ -90,7 +90,7 @@ func (us *userHandler) updateUser() echo.HandlerFunc {
 
 		uploader := s3manager.NewUploader(s3Session)
 		inputData := &s3manager.UploadInput{
-			Bucket: aws.String("alifproject"),           // bucket's name
+			Bucket: aws.String("alifproject"),              // bucket's name
 			Key:    aws.String("myfiles/" + file.Filename), // files destination location
 			Body:   src,                                    // content of the file
 			// ACL:    aws.String("Objects - List"),
@@ -130,6 +130,6 @@ func (us *userHandler) LoginUser() echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, FailResponse(err.Error()))
 		}
 		token := us.srv.GenerateToken(res.ID)
-		return c.JSON(http.StatusCreated, SuccessLogin("berhasil register", token, ToResponse(res, "reg")))
+		return c.JSON(http.StatusCreated, SuccessLogin("berhasil login", token, ToResponse(res, "reg")))
 	}
 }
